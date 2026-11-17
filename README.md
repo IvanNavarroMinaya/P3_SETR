@@ -1,4 +1,4 @@
-# P3_SETR --- Controlador de una máquina expendedora
+# P3_SETR - Controlador de una máquina expendedora
 
 **Asignatura:** Sistemas Empotrados y de Tiempo Real\
 **Titulación:** Grado en Ingeniería de Robótica Software\
@@ -38,7 +38,6 @@ hardware físico
     físicas](#14-pruebas-en-simulación-y-pruebas-físicas)
 15. [Esquema del montaje en Wokwi](#15-esquema-del-montaje-en-wokwi)
 16. [Conclusiones y aprendizaje](#16-conclusiones-y-aprendizaje)
-17. [Trabajo pendiente](#17-trabajo-pendiente)
 
 ------------------------------------------------------------------------
 
