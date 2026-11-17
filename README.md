@@ -6,8 +6,6 @@
 **Autor:** Ivan Navarro Minaya\
 **Plataforma utilizada en la implementación:** Arduino Mega 2560\
 **Entorno de simulación:** Wokwi\
-**Estado de la memoria:** pendiente de completar las pruebas sobre el
-hardware físico
 
 ------------------------------------------------------------------------
 
@@ -36,7 +34,7 @@ hardware físico
     consideraciones](#13-gestión-de-errores-y-consideraciones)
 14. [Pruebas en simulación y pruebas
     físicas](#14-pruebas-en-simulación-y-pruebas-físicas)
-15. [Esquema del montaje en Wokwi](#15-esquema-del-montaje-en-wokwi)
+15. [Esquema del montaje en Wokwi](#15-esquema-del-montaje)
 16. [Conclusiones y aprendizaje](#16-conclusiones-y-aprendizaje)
 
 ------------------------------------------------------------------------
@@ -49,9 +47,8 @@ integrar los elementos usados en un único sistema que respondiese a eventos
 externos, mantuviese una interacción ordenada con el usuario y
 gestionase distintas operaciones con requisitos temporales.
 
-La máquina dispone de dos modos principales de funcionamiento: 
-
-- Modo arranque.
+La máquina dispone de dos modos principales de funcionamiento 
+(además del arranque): 
 
 - Servicio: se detecta la presencia de un usuario, se muestran las
 condiciones ambientales, se permite seleccionar un producto y se simula
@@ -115,13 +112,13 @@ El modo de servicio constituye el funcionamiento habitual de la máquina:
 
 Los precios iniciales son:
 
-  Producto         Precio inicial
-  -------------- ----------------
-  Café Solo                1,00 €
-  Café Cortado             1,10 €
-  Café Doble               1,25 €
-  Café Premium             1,50 €
-  Chocolate                2,00 €
+| Producto     | Precio inicial |
+|--------------|---------------:|
+| Café Solo    |         1,00 € |
+| Café Cortado |         1,10 € |
+| Café Doble   |         1,25 € |
+| Café Premium |         1,50 € |
+| Chocolate    |         2,00 € |
 
 ### 2.3. Modo de administración
 
@@ -216,11 +213,19 @@ periódica de los sensores y el catálogo. Finalmente implementé los
 estados de servicio y administración.
 
 Durante el proceso también fui ajustando detalles de diseño. Por
-ejemplo, decidí almacenar los precios en céntimos enteros en lugar de
-utilizar `float`, para evitar problemas de representación y redondeo.
-También añadí funciones para formatear los precios y para actualizar
+ejemplo, añadí funciones para formatear los precios y para actualizar
 líneas concretas del LCD sin tener que limpiar toda la pantalla en cada
 cambio.
+
+### 3.5 Interpretaciones del enunciado
+
+Algunos puntos del enunciado admiten más de una interpretación. Las decisiones tomadas son:
+
+- Arranque: el LED1 se enciende tres veces durante 1 s, con 1 s apagado entre ellas; tras el tercer apagado se pasa a servicio (unos 5 s en total).
+- Pulsador: la duración se evalúa al soltar el botón. Las pulsaciones durante el arranque se ignoran.
+- Preparación: el LCD muestra `PREPARANDO...` y el nombre del producto en lugar de un texto fijo de café, ya que el catálogo incluye chocolate.
+- Tras `RETIRE BEBIDA`: se vuelve a la espera; si el cliente sigue a menos de 1 m, la interacción comienza de nuevo, como indica el enunciado.
+- Precios: se limitan entre 0,05 € y 9,95 €.
 
 ## 4. Hardware y conexiones
 
@@ -244,24 +249,24 @@ La implementación contempla los siguientes componentes:
 
 La asignación utilizada está centralizada en `src/Config.h`.
 
-  Elemento            Señal                 Pin del Arduino Mega 2560
-  ------------------- ------------------- ---------------------------
-  Pulsador externo    Señal digital                                D2
-  LED1 rojo           Salida digital                               D8
-  LED2 verde          Salida PWM                                   D9
-  LCD                 RS                                          D30
-  LCD                 Enable                                      D31
-  LCD                 D4                                          D32
-  LCD                 D5                                          D33
-  LCD                 D6                                          D34
-  LCD                 D7                                          D35
-  Joystick            Eje X                                        A0
-  Joystick            Eje Y                                        A1
-  Joystick            Pulsador                                    D22
-  DHT11               Datos                                       D23
-  HC-SR04             Trigger                                     D24
-  HC-SR04             Echo                                        D25
-  Semilla aleatoria   Entrada analógica                           A15
+| Elemento          | Señal             | Pin del Arduino Mega 2560 |
+|-------------------|-------------------|---------------------------|
+| Pulsador externo  | Señal digital     | D2                        |
+| LED1 rojo         | Salida digital    | D8                        |
+| LED2 verde        | Salida PWM        | D9                        |
+| LCD               | RS                | D30                       |
+| LCD               | Enable            | D31                       |
+| LCD               | D4                | D32                       |
+| LCD               | D5                | D33                       |
+| LCD               | D6                | D34                       |
+| LCD               | D7                | D35                       |
+| Joystick          | Eje X             | A0                        |
+| Joystick          | Eje Y             | A1                        |
+| Joystick          | Pulsador          | D22                       |
+| DHT11             | Datos             | D23                       |
+| HC-SR04           | Trigger           | D24                       |
+| HC-SR04           | Echo              | D25                       |
+| Semilla aleatoria | Entrada analógica | A15                       |
 
 El LED2 está conectado a un pin con capacidad PWM, ya que necesito
 controlar su intensidad y no solamente encenderlo o apagarlo. El
@@ -407,17 +412,6 @@ La finalidad es desacoplar la frecuencia de lectura de los sensores de
 la lógica de los estados. Los estados no deciden cuándo debe realizarse
 una lectura física; simplemente consultan el último valor disponible.
 
-Cuando una lectura del DHT es válida, se actualizan temperatura y
-humedad y se activa una bandera que indica que hay datos nuevos. En el
-caso del ultrasónico, cada medición actualiza la distancia y activa su
-propia bandera. Las funciones `hasNewDHTReading()` y
-`hasNewDistanceReading()` consumen esas notificaciones para que los
-estados puedan actualizar la pantalla una sola vez por cada nueva
-lectura.
-
-Por tanto, la planificación es periódica y cooperativa, no una ejecución
-paralela real.
-
 ### 6.3. Temporización mediante `millis()`
 
 Para controlar los tiempos de los estados utilizo `millis()`, que
@@ -442,7 +436,7 @@ necesito conservar un dato entre iteraciones, por ejemplo el instante de
 la siguiente fase del parpadeo o el último segundo mostrado en el
 contador.
 
-### 6.4. Esperas bloqueantes del sensor ultrasónico
+### 6.4. Esperas bloqueantes de los sensores
 
 La mayor parte de la lógica de la aplicación se ha diseñado sin
 `delay()`. Sin embargo, la lectura del HC-SR04 utiliza `pulseIn()` con
@@ -456,10 +450,17 @@ bloqueado el programa indefinidamente.
 
 Esta lectura se ejecuta de forma periódica cada 150 ms. La planificación
 periódica no elimina el bloqueo de `pulseIn()`: únicamente controla
-cuándo se inicia cada medición. Esta solución se mantuvo teniendo en
-cuenta el criterio indicado durante el desarrollo de la práctica sobre
-la aceptación de los tiempos de espera propios de la medición
-ultrasónica.
+cuándo se inicia cada medición. 
+
+El DHT11 también introduce una espera: la librería mantiene la línea de datos a nivel bajo unos 20 ms para iniciar la comunicación y desactiva las interrupciones durante la transmisión (unos 4–5 ms). Esta lectura solo se realiza cada 2 s.
+
+Por tanto, la vuelta más lenta del `loop()` está acotada a unos 25–30 ms. Este bloqueo no afecta a los requisitos:
+
+- El pulsador lo captura la interrupción, como mucho con unos milisegundos de retraso si coincide con la lectura del DHT.
+- El joystick se lee con un retraso imperceptible.
+- El PWM del LED2 lo genera el hardware.
+- El Watchdog tiene un margen de 2 s.
+
 
 ### 6.5. Uso de TimerOne
 
@@ -563,40 +564,20 @@ tiempo desde su entrada.
 
 ### 9.1. Estados implementados
 
-  -----------------------------------------------------------------------
-  Estado                              Función
-  ----------------------------------- -----------------------------------
-  `STARTUP`                           Secuencia inicial de parpadeo y
-                                      mensaje de carga
-
-  `SERVICE_WAITING`                   Espera de presencia de un usuario
-
-  `SERVICE_ENVIRONMENT`               Visualización temporal de
-                                      temperatura y humedad
-
-  `SERVICE_MENU`                      Navegación y selección de productos
-
-  `SERVICE_PREPARING`                 Preparación temporizada y progreso
-                                      PWM
-
-  `SERVICE_DELIVERY`                  Mensaje de retirada de bebida
-
-  `ADMIN_MENU`                        Menú principal de administración
-
-  `ADMIN_TEMPERATURE`                 Consulta dinámica del DHT11
-
-  `ADMIN_DISTANCE`                    Consulta dinámica del sensor
-                                      ultrasónico
-
-  `ADMIN_COUNTER`                     Contador de segundos desde el
-                                      arranque
-
-  `ADMIN_PRICES`                      Selección de un producto para
-                                      modificar su precio
-
-  `ADMIN_PRICE_EDIT`                  Edición, confirmación o descarte
-                                      del precio
-  -----------------------------------------------------------------------
+| Estado                | Función                                           |
+|-----------------------|---------------------------------------------------|
+| `STARTUP`             | Secuencia inicial de parpadeo y mensaje de carga  |
+| `SERVICE_WAITING`     | Espera de presencia de un usuario                 |
+| `SERVICE_ENVIRONMENT` | Visualización temporal de temperatura y humedad   |
+| `SERVICE_MENU`        | Navegación y selección de productos               |
+| `SERVICE_PREPARING`   | Preparación temporizada y progreso PWM            |
+| `SERVICE_DELIVERY`    | Mensaje de retirada de bebida                     |
+| `ADMIN_MENU`          | Menú principal de administración                  |
+| `ADMIN_TEMPERATURE`   | Consulta dinámica del DHT11                       |
+| `ADMIN_DISTANCE`      | Consulta dinámica del sensor ultrasónico          |
+| `ADMIN_COUNTER`       | Contador de segundos desde el arranque            |
+| `ADMIN_PRICES`        | Selección de un producto para modificar su precio |
+| `ADMIN_PRICE_EDIT`    | Edición, confirmación o descarte del precio       |
 
 ### 9.2. Arranque: `STARTUP`
 
@@ -612,9 +593,6 @@ Al completar tres parpadeos se solicita la transición a
 `SERVICE_WAITING`. La transición también ejecuta la acción de salida que
 apaga LED1.
 
-No utilizo `delay()` para mantener encendido o apagado el LED. El estado
-comprueba el tiempo transcurrido en cada iteración del bucle.
-
 ### 9.3. Espera de usuario: `SERVICE_WAITING`
 
 Al entrar se muestra:
@@ -629,9 +607,8 @@ medida por el sensor ultrasónico. Se considera que hay un cliente cuando
 la distancia es válida y menor que `CLIENT_DISTANCE`, configurada a 100
 cm.
 
-Si el sensor no recibe eco, la lectura es `-1` y se interpreta como
-ausencia de cliente. Cuando se detecta presencia, se solicita la
-transición a `SERVICE_ENVIRONMENT`.
+Cuando se detecta presencia, se solicita la transición a
+`SERVICE_ENVIRONMENT`.
 
 ### 9.4. Monitorización ambiental: `SERVICE_ENVIRONMENT`
 
@@ -639,10 +616,10 @@ Al entrar se muestran la temperatura y la humedad si ya existe una
 lectura válida del DHT11. Si todavía no hay datos válidos, se muestra
 temporalmente `LEYENDO AMBIENTE...`.
 
-La función `hasNewDHTReading()` permite detectar nuevas lecturas. Cuando
-hay una nueva muestra válida, se actualizan las dos líneas del LCD. La
-pantalla permanece en este estado durante cinco segundos, medidos desde
-`stateEntryTime`, y después se solicita la transición a `SERVICE_MENU`.
+Cada vez que llega una nueva muestra válida, se actualizan las dos
+líneas del LCD. La pantalla permanece en este estado durante cinco
+segundos, medidos desde `stateEntryTime`, y después se solicita la
+transición a `SERVICE_MENU`.
 
 Los valores se redondean para mostrarlos de forma compacta en la
 pantalla de 16 columnas.
@@ -697,9 +674,6 @@ para forzar que cada duración sea distinta de todas las anteriores.
 Al entrar se muestra `RETIRE BEBIDA`. El estado mide tres segundos
 mediante `millis()` y después solicita volver a `SERVICE_WAITING`.
 
-No se utiliza ninguna espera bloqueante, por lo que el resto de las
-tareas del bucle puede seguir ejecutándose durante ese intervalo.
-
 ### 9.8. Acceso y salida de administración
 
 El acceso al modo de administración se produce cuando `processButton()`
@@ -742,11 +716,6 @@ izquierda solicita volver a `ADMIN_MENU`.
 La vista muestra la última distancia medida por el HC-SR04 y actualiza
 la segunda línea del LCD cuando se completa una nueva medición.
 
-Si el sensor no recibe eco dentro del timeout configurado, se muestra
-`FUERA DE RANGO`. El timeout actual es de 12000 microsegundos, que
-equivale aproximadamente a un alcance de dos metros teniendo en cuenta
-el recorrido de ida y vuelta del sonido.
-
 El movimiento hacia la izquierda permite regresar al menú de
 administración.
 
@@ -775,18 +744,10 @@ actualiza en cada modificación para que el usuario pueda ver el importe
 antes de confirmarlo.
 
 Al pulsar el botón del joystick se llama a `setProductPrice()` y el
-nuevo valor pasa al catálogo. Si se mueve el joystick hacia la
-izquierda, se vuelve al listado sin llamar a esa función, por lo que se
-descarta el valor provisional.
-
-Los precios se almacenan en céntimos enteros. La función `formatPrice()`
-convierte el importe a una cadena con dos decimales, por ejemplo `1.10`,
-sin depender de operaciones de coma flotante para formatear el precio.
-
-La configuración actual limita el precio entre 0,05 € y 9,95 €, en pasos
-de 0,05 €. Estos límites son decisiones de implementación añadidas al
-requisito de modificar precios en tramos de cinco céntimos; no son
-límites especificados por el enunciado.
+nuevo valor pasa al catálogo, que es el mismo que consulta el modo de
+servicio. Si se mueve el joystick hacia la izquierda, se vuelve al
+listado sin llamar a esa función, por lo que se descarta el valor
+provisional.
 
 Los precios confirmados permanecen en la memoria RAM mientras la placa
 está encendida. No se guardan en EEPROM, tal como permite el enunciado.
@@ -800,8 +761,7 @@ obtiene temperatura y humedad y comprueba si las lecturas son válidas
 mediante `isnan()`.
 
 En `Sensors.cpp`, si la lectura es válida, se actualizan los últimos
-valores y se activa `newDHTReading`. Si falla, se conservan los últimos
-valores válidos y se registra un mensaje de depuración.
+valores y se activa `newDHTReading`.
 
 El periodo de lectura configurado es de 2000 ms, adecuado para el
 intervalo de actualización que necesita el DHT11.
@@ -822,9 +782,8 @@ donde `t` está expresado en microsegundos y la distancia obtenida está
 en centímetros. Se divide entre dos porque el sonido recorre el trayecto
 de ida y vuelta.
 
-El timeout está configurado a 12000 microsegundos. Si no se recibe el
-eco, la función devuelve `-1`, que el resto del programa interpreta como
-una medición no válida o fuera de rango.
+El timeout está configurado a 12000 microsegundos, lo que equivale
+aproximadamente a un alcance de dos metros.
 
 El periodo de lectura es de 150 ms. Esto deja un intervalo entre
 disparos superior al mínimo habitual requerido por el HC-SR04.
@@ -872,6 +831,10 @@ restos de mensajes anteriores cuando el nuevo texto es más corto.
 Los mensajes que superan las dieciséis columnas se recortan y generan
 una traza de aviso si la depuración está activada.
 
+Como el juego de caracteres del LCD no incluye tildes ni el símbolo €,
+los nombres se muestran sin tilde (`Cafe`), los precios con `E` y el
+símbolo de grado se obtiene con el carácter `(char)223`.
+
 ### 11.3. LEDs
 
 LED1 se controla como salida digital mediante `setLED1()`. Se utiliza en
@@ -902,15 +865,6 @@ He elegido almacenar los precios como enteros en céntimos. Por ejemplo,
 1,10 € se representa internamente como 110. Esto evita errores de
 precisión que pueden aparecer al realizar sumas y restas repetidas con
 números de coma flotante.
-
-La edición utiliza una copia temporal. De esta forma, el usuario puede
-probar distintos importes y verlos en el LCD sin alterar todavía el
-catálogo. La modificación solo se hace efectiva cuando confirma con el
-botón del joystick.
-
-Los cambios confirmados son visibles en el modo de servicio porque ambos
-modos consultan el mismo módulo `Products`. No se necesita una segunda
-copia del catálogo para el servicio y otra para administración.
 
 ## 13. Gestión de errores y consideraciones
 
@@ -998,14 +952,17 @@ Vídeo de las pruebas físicas:
 
 ### 14.4. Incidencias y ajustes realizados
 
-  Incidencia observada           Causa identificada   Solución aplicada
-  ------------------------------ -------------------- -------------------
-  Pendiente de pruebas físicas   ---                  ---
+| Incidencia observada         | Causa identificada | Solución aplicada |
+|------------------------------|--------------------|-------------------|
+| Pendiente de pruebas físicas | ---                | ---               |
 
 ## 15. Esquema del montaje
 
 El montaje se ha representado en Wokwi para visualizar las conexiones
-entre el microcontrolador y los componentes. 
+entre el microcontrolador y los componentes. Presenta algunas diferencias con el montaje físico, debidas a los componentes disponibles en el simulador:
+
+- Wokwi no dispone del DHT11, por lo que el esquema utiliza un DHT22 con su resistencia pull-up de 10 kΩ. En el montaje real se usa el módulo DHT11 del kit, que ya integra esa resistencia.
+- El pulsador del esquema es de 6 mm y el físico de 12 mm; eléctricamente son equivalentes.
 
 ![Esquema del circuito en Wokwi](./docs/p3_diagram.png)
 
