@@ -916,6 +916,9 @@ Se muestran tres videos de la demo de la practica, uno que muestra la versión d
   <source src="./docs/p3_demo_server.mp4" type="video/mp4">
   Tu navegador no soporta la reproducción de vídeos.
 </video>
+[▶️ Ver demostración del modo server (Vídeo con audio)](https://github.com/IvanNavarroMinaya/P3_SETR/raw/main/docs/p3_demo_server.mp4)
+
+
 ![Demostración del modo server](./docs/p3_demo_server.mp4)
 
 ![Demostración del modo admin](./docs/p3_demo_admin.mp4)
