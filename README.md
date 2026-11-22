@@ -913,7 +913,7 @@ A causa de ese problema se decidió no incluir ninguna implementación extra en 
 
 Se muestran tres videos de la demo de la practica, uno que muestra la versión del servidor, otro la del administrador y por último, uno que sirve de demo en la transición por pulsaciones:
 
-[▶️ Ver demostración del modo server (Vídeo con audio)](https://github.com/IvanNavarroMinaya/P3_SETR/blob/main/docs/p3_demo_server.mp4?raw=true)
+[▶️ Ver demostración del modo server (Vídeo con audio)](https://htmlpreview.github.io/?https://github.com/IvanNavarroMinaya/P3_SETR/blob/main/docs/player_server.html)
 
 ![Demostración del modo server](./docs/p3_demo_server.mp4)
 
