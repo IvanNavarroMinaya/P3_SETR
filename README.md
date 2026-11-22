@@ -912,7 +912,10 @@ A causa de ese problema se decidió no incluir ninguna implementación extra en 
 ### 14.3. Vídeo de demostración
 
 Se muestran tres videos de la demo de la practica, uno que muestra la versión del servidor, otro la del administrador y por último, uno que sirve de demo en la transición por pulsaciones:
-
+<video width="100%" controls>
+  <source src="./docs/p3_demo_server.mp4" type="video/mp4">
+  Tu navegador no soporta la reproducción de vídeos.
+</video>
 ![Demostración del modo server](./docs/p3_demo_server.mp4)
 
 ![Demostración del modo admin](./docs/p3_demo_admin.mp4)
