@@ -913,13 +913,12 @@ A causa de ese problema se decidió no incluir ninguna implementación extra en 
 
 Se muestran tres videos de la demo de la practica, uno que muestra la versión del servidor, otro la del administrador y por último, uno que sirve de demo en la transición por pulsaciones:
 
-[▶️ Ver demostración del modo server (Vídeo con audio)](https://ivannavarrominaya.github.io/P3_SETR/player_server.html)
+[▶️ Ver demostración del modo server](https://ivannavarrominaya.github.io/P3_SETR/player_server.html)
 
-![Demostración del modo server](./docs/p3_demo_server.mp4)
+[▶️ Ver demostración del modo admin](https://ivannavarrominaya.github.io/P3_SETR/player_admin.html)
 
-![Demostración del modo admin](./docs/p3_demo_admin.mp4)
+[▶️ Ver demostración del button](https://ivannavarrominaya.github.io/P3_SETR/player_button.html)
 
-![Demostración del button](./docs/p3_demo_button.mp4)
 
 ## 15. Esquema del montaje
 
