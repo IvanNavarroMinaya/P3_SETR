@@ -899,62 +899,25 @@ montar y ejecutar el proyecto sobre la placa real.
 Durante el desarrollo he utilizado Wokwi para representar el circuito y
 comprobar la integración del software con los componentes simulados.
 
-**Pendiente de completar:** describir aquí las pruebas realizadas en
-Wokwi, indicando qué funcionalidades se comprobaron, qué resultados se
-observaron y qué ajustes fueron necesarios. No se deben presentar como
-verificadas funcionalidades que no se hayan probado realmente.
+La ayuda principal que aportó este simulador fue comprobar la funcionalidad de los elementos que se debían usar en la práctica.  
 
 ### 14.2. Pruebas sobre Arduino físico
 
-Una vez montado el circuito, documentaré las pruebas realizadas sobre
-Arduino Mega 2560. Para cada prueba indicaré:
+Una vez montado el circuito, y comprobados los elementos en el simulador. probé cada elemento por separado, daandome cuenta de algunos errores mínimos de conexiones.
 
--   Objetivo.
--   Procedimiento seguido.
--   Resultado esperado.
--   Resultado obtenido.
--   Problemas detectados.
--   Ajustes realizados, si los hubiera.
+El problema principal encontrado sobre la parte física de la práctica era la constante desconexión del cableado, a causa de una posible holgura en ellos. Esto causaba constantes desconexiones en el hardware de la práctica durante las pruebas.
 
-#### Lista de comprobaciones
-
--   [ ] Arranque: tres parpadeos de LED1 y mensaje `CARGANDO...`.
--   [ ] Transición automática al estado de espera.
--   [ ] Detección de presencia por debajo de un metro.
--   [ ] Mensaje de espera cuando no hay ningún usuario.
--   [ ] Lectura de temperatura y humedad.
--   [ ] Visualización ambiental durante cinco segundos.
--   [ ] Navegación por los cinco productos.
--   [ ] Visualización correcta de los precios.
--   [ ] Confirmación de un producto.
--   [ ] Duración de preparación entre cuatro y ocho segundos.
--   [ ] Incremento progresivo del brillo de LED2.
--   [ ] Mensaje `RETIRE BEBIDA` durante tres segundos.
--   [ ] Cancelación mediante una pulsación de entre dos y tres segundos.
--   [ ] Acceso al modo administración con una pulsación de cinco
-    segundos o más.
--   [ ] Encendido de ambos LEDs durante administración.
--   [ ] Navegación por las cuatro opciones del menú de administración.
--   [ ] Consulta dinámica de temperatura y humedad.
--   [ ] Consulta dinámica de distancia.
--   [ ] Actualización del contador segundo a segundo.
--   [ ] Incremento y decremento del precio en pasos de cinco céntimos.
--   [ ] Confirmación de un precio y comprobación en el modo servicio.
--   [ ] Descarte de una edición sin modificar el catálogo.
--   [ ] Salida del modo administración mediante el botón externo.
--   [ ] Funcionamiento estable del Watchdog.
+A causa de ese problema se decidió no incluir ninguna implementación extra en la parte física que impidiese e trato directo con el cableado.
 
 ### 14.3. Vídeo de demostración
 
-Vídeo de las pruebas físicas:
+Se muestran tres videos de la demo de la practica, uno que muestra la versión del servidor, otro la del administrador y por último, uno que sirve de demo en la transición por pulsaciones:
 
-![Demostración de la práctica](./docs/p3_demo.gif)
+![Demostración del modo server](./docs/p3_demo_server.mp4)
 
-### 14.4. Incidencias y ajustes realizados
+![Demostración del modo admin](./docs/p3_demo_admin.mp4)
 
-| Incidencia observada         | Causa identificada | Solución aplicada |
-|------------------------------|--------------------|-------------------|
-| Pendiente de pruebas físicas | ---                | ---               |
+![Demostración del button](./docs/p3_demo_button.mp4)
 
 ## 15. Esquema del montaje
 
@@ -1040,14 +1003,6 @@ Esto simplifica los incrementos de cinco céntimos y evita errores de
 precisión. Además, separar el precio provisional del precio almacenado
 me ha permitido implementar la opción de descartar cambios sin alterar
 el catálogo.
-
-**Por último, la práctica me ha servido para entender que una
-implementación que parece correcta en simulación todavía necesita
-validación sobre el hardware físico. Las conexiones, los umbrales
-analógicos, las lecturas de los sensores y el comportamiento real de los
-pulsadores pueden requerir ajustes. Por eso he reservado un apartado
-específico para documentar las pruebas físicas y las incidencias que
-aparezcan durante el montaje.**
 
 En conjunto, considero que el resultado es una aplicación modular en la
 que cada componente tiene una responsabilidad concreta y los distintos
